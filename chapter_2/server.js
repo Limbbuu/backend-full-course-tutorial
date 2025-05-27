@@ -5,9 +5,10 @@ const express = require('express'); // requires Express and store it in to varia
 const app = express(); //define backend application and invoke Express as a Function
 const PORT = 8383; //define port, 4-digit number typically
 
-let data = {
-    name: "james"
-}
+let data = ['james'];
+
+// middleware (makes app to expect JSON-data (very important!!) )
+app.use(express.json());
 
 // HTTP VERBS (method) && ROUTES (or paths)
 // The method informs the nature of requests and the route is a further subdirectory basically (we direct the requets to the body to respond
@@ -22,12 +23,18 @@ app.get('/', (req, res) => {
         color:blue;">
         <h1>DATA:</h1>
         <p>${JSON.stringify(data)}</p>
+        <a href="/dashboard">Dashboard</a>
         </body>
         `);
 });
 
 app.get('/dashboard', (req, res) => {
-    res.send('<h1>dashboard</h1>');
+    res.send(`
+        <body>
+        <h1>dashboard</h1>
+        <a href="/">Home</a>
+        </body>
+        `);
 });
 
 
@@ -37,8 +44,22 @@ app.get('/dashboard', (req, res) => {
 
 app.get('/api/data', (req, res) => {
     console.log("This one was for data");
-    res.send(data);
+    res.status(599).send(data);
 });
 
+app.post('/api/data', (req, res) =>{
+   // someone wants to create a user (for example when they click a sign up button)
+   // the user clicks the sign up button after entering their credentials, and their browser is wired up to send out a network to the server to handle that action
+    const newEntry = req.body;
+    console.log(newEntry);
+    data.push(newEntry.name);
+    res.sendStatus(201);
+});
+
+app.delete('/api/data', (req, res) => {
+    data.pop();
+    console.log("We deleted the element off the end of the array");
+    res.sendStatus(203);
+})
 
 app.listen(PORT, () => console.log(`Server has started on: ${PORT}`)); //listens the incoming request
