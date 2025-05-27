@@ -17,7 +17,13 @@ let data = {
 
 app.get('/', (req, res) => {
     //this is endpointns number 1 - /
-    res.send('<h1>homepage</h1>');
+    res.send(`
+        <body style="background:pink;
+        color:blue;">
+        <h1>DATA:</h1>
+        <p>${JSON.stringify(data)}</p>
+        </body>
+        `);
 });
 
 app.get('/dashboard', (req, res) => {
@@ -26,6 +32,8 @@ app.get('/dashboard', (req, res) => {
 
 
 // Type 2 - API endpoints (non visual)
+
+//CRUD-method - create=post, read=get, update=put and delete=delete
 
 app.get('/api/data', (req, res) => {
     console.log("This one was for data");
