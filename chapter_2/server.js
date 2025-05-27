@@ -13,7 +13,12 @@ const PORT = 8383; //define port, 4-digit number typically
 app.get('/', (req, res) => {
     //this is endpointns number 1 - /
     console.log("Yay, I hit the endpoint!", req.method);
-    res.sendStatus(200);
+    res.sendStatus(201);
+})
+
+app.get('/dashboard', (req, res) => {
+    console.log("Oooh now I hit the /dashboard endpoint");
+    res.send("hi");
 })
 
 app.listen(PORT, () => console.log(`Server has started on: ${PORT}`)); //listens the incoming request
