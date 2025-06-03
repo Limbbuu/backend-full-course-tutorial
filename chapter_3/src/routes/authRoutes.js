@@ -14,9 +14,25 @@ router.post('/register', (req, res) => {
     // encrypt the password
     const hashedPassword = bcrypt.hashSync(password, 8);
     
-    console.log(hashedPassword);
+    // save the new user and hashed  password to the database
+    try {
+        const inserUser = db.prepare(`INSERT INTO users (username, password)
+            VALUES (?, ?)`);
+            const result = inserUser.run(username, hashedPassword);
 
-    res.sendStatus(201);
+            // now that we have a user, I want to add their first todo for them
+            const defaultTodo = 'Hello :) Add your first todo!';
+            const insertTodo = db.prepare(`INSERT INTO todos (user_id, task)
+                VALUES (?, ?)`);
+                insertTodo.run(result.lastInsertRowid, defaultTodo);
+
+            // create a token
+            const token = jwt.sign({id: result.lastInsertRowid}, process.env.JWT_SECRET, {expiresIn: '24'});
+            res.json({ token });
+    } catch (error) {
+        console.log(error.message);
+        res.sendStatus(503);
+    };
 });
 
 router.post('/login', (req, res) => {
